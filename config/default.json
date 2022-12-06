@@ -1,0 +1,17 @@
+{
+    "port": 5000,
+    "configsql": {
+        "user": "test123",
+        "password": "test123",
+        "server": "PIRYUSHOFF",
+        "database": "VKR",
+        "options": {
+            "trustedConnection": true,
+            "enableArithAbort": true,
+            "instancename": "",
+            "trustServerCertificate": true
+        },
+        "port": 49999
+    },
+    "jwtSecret": "c.ronaldo is the best player in the world"
+}
