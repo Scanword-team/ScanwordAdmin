@@ -11,24 +11,6 @@ export const AudioPage = () => {
         getAudioFromDB()
     }, [])
 
-    const eventLoad = async() => {
-        let path = reader.result // path - то, что хранится в БД
-        const audio1 = new Audio()
-        audio1.src = path
-        audio1.play().then(() => {
-            if (audio && audio.length !== 0) {
-                updateAudio([...audio, path])
-            } else {
-                updateAudio([path])
-            }
-            audio1.pause()
-        })
-        audio1.onerror = function() {
-            alert('Некорректное содержимое файла аудио')
-            reader.removeEventListener('load', this)
-        }
-    }
-
     const fileHandler = () => {
         const file = fileInput.current.files[0]
         if (file) {

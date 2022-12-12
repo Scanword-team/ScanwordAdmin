@@ -122,7 +122,7 @@ export const SettingState = ({children}) => {
         setListDicts(null)
     }
  
-    const updateListwords = (newListwords) => {
+    const updateListwords = (newListwords=null) => {
         setListwords(()=>newListwords)
     }
 

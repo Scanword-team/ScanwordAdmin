@@ -143,7 +143,7 @@ export const AdminCreateScanword = () => {
             changeInputHorizon('',10)
             updateListDicts()
             updateScanword([])
-            updateListwords(null),
+            updateListwords()
             updateWordDB([])
         }
         else {
@@ -155,7 +155,7 @@ export const AdminCreateScanword = () => {
             changeInputHorizon('',10)
             updateListDicts()
             updateScanword([])
-            updateListwords(null),
+            updateListwords(null)
             updateWordDB([])
             changeBoolUpdate(false)
         }

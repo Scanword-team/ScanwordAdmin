@@ -1,9 +1,12 @@
 import { useContext } from "react"
-const crc32 =require('crc-32')
 
 import { AuthContext } from "../context/AuthContext"
 import { CommonHeader } from "../components/CommonHeader/CommonHeader"
 import { HeaderAdmin } from "../components/HeaderAdmin/HeaderAdmin"
+
+const crc32 =require('crc-32')
+
+
 
 
 
