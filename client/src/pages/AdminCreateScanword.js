@@ -35,12 +35,18 @@ export const AdminCreateScanword = () => {
         updateListwords,
         changeBoolUpdate,
         updateWordDB,
-        wordDB
+        wordDB,
+        id_scanword, 
+        changeId_scanword
     } = useContext(SettingContext)
 
     useEffect(() => {
         getWordDBFromDB()
     }, [])
+
+    useEffect(() => {
+        console.log(listwords)
+    }, [listwords])
 
     useEffect(() => {
         if (scanword.length!==0) {
@@ -136,19 +142,26 @@ export const AdminCreateScanword = () => {
     const saveScanword = async() => {
         if (!boolUpdate) {
             let size = [hvalue, vvalue]
-            const res = await request('/api/scanword/saving', 'POST', {scanword, size, hint})
+            const id_scan = new Date()
+            const res = await request('/api/scanword/saving', 'POST', {scanword:scanword.map((el, index) => {
+                el.number = index +1
+                return el
+            }), size, hint, id: id_scan, name: id_scan})
             changeHint('',1) 
             changeDict('',"")
             changeInputVertical('',10)
             changeInputHorizon('',10)
             updateListDicts()
             updateScanword([])
-            updateListwords()
+            updateListwords(null)
             updateWordDB([])
         }
         else {
             let size = [hvalue, vvalue]
-            const res = await request('/api/scanword/saving', 'PUT', {scanword, size, hint})
+            const res = await request('/api/scanword/saving', 'PUT', {scanword:scanword.map((el, index) => {
+                el.number = index +1
+                return el
+            }), size, hint, id: id_scanword, name: id_scanword})
             changeHint('',1) 
             changeDict('',"")
             changeInputVertical('',10)
@@ -158,6 +171,7 @@ export const AdminCreateScanword = () => {
             updateListwords(null)
             updateWordDB([])
             changeBoolUpdate(false)
+            changeId_scanword(null)
         }
         
     }

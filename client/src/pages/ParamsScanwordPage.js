@@ -27,6 +27,10 @@ export const ParamsScanwordPage = () => {
 
     useEffect(() => {
         updateListDicts()
+        if (!boolUpdate) {
+            updateScanword([])
+        }
+        changeDict(0)
         // console.log(scanword)
     }, [])
 

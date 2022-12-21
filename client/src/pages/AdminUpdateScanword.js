@@ -13,7 +13,8 @@ export const AdminUpdateScanword = () => {
         changeInputHorizon,
         changeInputVertical,
         changeHint,
-        changeBoolUpdate
+        changeBoolUpdate,
+        changeId_scanword
     } = useContext(SettingContext)
 
     useEffect(() => {
@@ -27,6 +28,7 @@ export const AdminUpdateScanword = () => {
         changeInputVertical('', itemScanword.size[1],1)
         changeHint('', itemScanword.hint)
         changeBoolUpdate(true)
+        changeId_scanword(itemScanword.id)
     }
 
     return (

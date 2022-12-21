@@ -120,7 +120,6 @@ export const DictionaryPage = () => {
                     if ((String(reader.result.toLowerCase())).indexOf('img')!= -1 || (String(reader.result.toLowerCase())).indexOf('png')!= -1) {
                         revoke()
                     } else {
-                        console.log((String(reader.result.toLowerCase())).indexOf('img'))
                         const descr = reader.result.split("\n")
                         descr.forEach((oneDescr) => {
                             const newWord = {}

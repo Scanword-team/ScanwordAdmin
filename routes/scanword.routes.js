@@ -119,8 +119,9 @@ router.post(
     '/saving',
     async (req, res) => {
     try {
-        const {scanword, size, hint} = await req.body
-        scanwords.push({questions: scanword, size, hint, id: new Date()}) 
+        const {scanword, size, hint, id, name} = await req.body
+        scanwords.push({questions: scanword, size, hint, id, name}) 
+        console.log(scanwords[0])
         // size[0] = horiszontalvalue, size[1] = verticalvalue 
         // questions = [ {questionId: '2', dict: 1, direction: 0, x: 6, y: 6}, ...]
         res.status(201).json({message: "Успешно"})
@@ -135,8 +136,8 @@ router.put(
     '/saving',
     async (req, res) => {
     try {
-        const {scanword, size, hint} = await req.body
-        scanwords.push({questions: scanword, size, hint, id: new Date()}) 
+        const {scanword, size, hint, id, name} = await req.body
+        scanwords.push({questions: scanword, size, hint, id, name}) 
         // size[0] = horiszontalvalue, size[1] = verticalvalue 
         // questions = [ {questionId: '2', dict: 1, direction: 0, x: 6, y: 6}, ...]
         res.status(201).json({message: "Успешно"})

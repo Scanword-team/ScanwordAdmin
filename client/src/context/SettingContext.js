@@ -18,6 +18,8 @@ export const SettingContext = createContext({
     boolUpdate: false,
     gallery: null,
     audio: null,
+    id_scanword: null,
+    changeId_scanword: () => {},
     changeListDicts: () => {},
     updateAudio: () => {},
     updateGallery: () => {},
@@ -63,6 +65,11 @@ export const SettingState = ({children}) => {
     }) // фильтрация списка слов: по наличию картинки, по наличию мелодии
     const [listScanwords, setListScanwords] = useState(null)
     const [boolUpdate, setBoolUpdate] = useState(false)
+    const [id_scanword, setId_scanword] = useState(null) // id сканворда при редактировании
+
+    const changeId_scanword = (id_scan) => {
+        setId_scanword(id_scan)
+    }
 
     const updateAudio = (newAudio) => {
         setAudio(newAudio)
@@ -122,7 +129,7 @@ export const SettingState = ({children}) => {
         setListDicts(null)
     }
  
-    const updateListwords = (newListwords=null) => {
+    const updateListwords = (newListwords) => {
         setListwords(()=>newListwords)
     }
 
@@ -270,7 +277,7 @@ export const SettingState = ({children}) => {
                 dict, hint,wordDB, 
                 listwords,listdicts, 
                 scanword, filter, listScanwords, 
-                boolUpdate, gallery, audio, 
+                boolUpdate, gallery, audio, id_scanword,
                 setAudioInDB, getAudioFromDB, 
                 updateAudio, getGalleryFromDB, 
                 setGalleryInDB, updateGallery,
@@ -281,7 +288,7 @@ export const SettingState = ({children}) => {
                 changeOnHorizon, changeInputVertical, 
                 changeInputHorizon, getWordDBFromDB, 
                 updateListwords, updateWordDB,
-                changeListDicts
+                changeListDicts, changeId_scanword
             }}>
             { children }
         </SettingContext.Provider>

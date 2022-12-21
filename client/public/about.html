@@ -4,11 +4,111 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesAbout.css">
-    <title>Сведения о системе</title>
+    <style>
+body {
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background-color: rgb(230, 238, 246);
+}
+
+.container {
+    margin: 10px 40px;
+}
+
+h1 {
+    font-size: 36pt;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: 600;
+}
+
+h2 {
+    font-size: 30pt;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    color:rgb(190, 187, 37);
+}
+
+h3 {
+    font-size: 24pt;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: 600;
+}
+
+p {
+    text-align: left;
+    font-size: 18pt;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    margin: 10px 0px 10px 20px;
+}
+
+ul {
+    text-align: left;
+    font-size: 18pt;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    list-style-type:square;
+}
+
+a:visited {
+    font-style: normal;
+    text-decoration: none;
+    color: black;
+}
+
+a:-webkit-any-link  {
+    text-decoration: none;
+    color: black;
+}
+
+
+a:hover {
+    color: rgb(195, 32, 113);
+}
+
+img {
+    max-width: 80%;
+    margin: 10px auto;
+}
+
+.flexing {
+    display: flex;
+}
+
+.flexing img {
+    max-width: 40%;
+}
+
+.up-button {
+    position: fixed;
+    right: 10px;
+    font-size: 16pt;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: 600;
+    background-color: rgba(172, 255, 47, 0.242);
+    color: rgba(0, 0, 0, 0.482);
+    border: 2px solid rgba(0, 0, 0, 0.449);
+}
+
+.up-button:hover {
+    cursor: pointer;
+    background-color: rgb(172, 255, 47);
+    color: rgb(0, 0, 0);
+    border: 2px solid black;
+}
+    </style>
+    <title>Сведения о системe</title>
+    <script>
+        const goUp = () => {
+            window.scrollTo(0,0);
+        }
+    </script>
 </head>
 <body>
     <div class="container">
+        <button class="up-button" onclick="goUp()">&uArr;</button>
         <ul>
             <li><a href="#ascsot">Автоматизировання система составления сканворда на заданную тему</a></li>
             <li>
@@ -27,7 +127,20 @@
                     <li><a href="#media">Работа с медиатекой</a></li>
                 </ul>
             </li>
-            <li><a href="#player">Игрок</a></li>
+            <li>
+                <a href="#player">Игрок</a>
+                <ul>
+                    <li><a href="#chose-scanword">Выбор сканворда для решения</a></li>
+                    <li>
+                        <a href="#solve-scanword">Решение сканворда</a>
+                        <ul>
+                            <li><a href="#check-correct">Проверка правильности решения</a></li>
+                            <li><a href="#save-result">Сохрание результата</a></li>
+                            <li><a href="#get-hint">Взятие подсказки</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
         </ul>
 
         <h1 id="ascsot">
@@ -42,7 +155,7 @@
         <p>
             Программа использует базу данных PostgreSQL 14.5. Программная система совместима с Windows 7 и выше.
             Для пользования программой необходимо предустановить браузер - Google Chrome 86.0.4240.183 (64-битный)  и выше
-            или Firefox 83.0 (64-битный) и выше.
+            или Firefox 83.0 (64-битный) и вышe.
         </p>
 
         <h3 id="auth">Авторизация, запуск программы</h3>
@@ -53,7 +166,7 @@
             для регистрации новой учётной записи игрока или входа в систему соответственно.
         </p>
 
-        <img src="./images/auth.png"/>
+        <img src="./assets/images/auth.png"/>
 
         <p>
             Если данные при регистрации введены верно, то система уведомляет пользователя об успешной регистрации
@@ -61,8 +174,8 @@
         </p>
 
         <div class="flexing">
-            <img src="./images/correct_register.png"/>
-            <img src="./images/incorrect_register.png"/>
+            <img src="./assets/images/correct_register.png"/>
+            <img src="./assets/images/incorrect_register.png"/>
         </div>
 
         <p>
@@ -72,15 +185,15 @@
         </p>
 
         <div class="flexing">
-            <img src="./images/correct_login_admin.png"/>
-            <img src="./images/correct_login_admin.png"/> <!--Вот здесь нужен скрин с прототипом интерфейса после авторизации за игрока-->
+            <img src="./assets/images/correct_login_admin.png"/>
+            <img src="./assets/images/correct_login_user.png"/> <!--Вот здесь нужен скрин с прототипом интерфейса после авторизации за игрока-->
         </div>
 
         <p>
             Если данные при входе введены некорректно, то система уведомляет пользователя об ошибке.
         </p>
 
-        <img src="./images/incorrect_login.png"/>
+        <img src="./assets/images/incorrect_login.png"/>
         
 
         <h2 id="admin">Администратор</h2>
@@ -137,13 +250,13 @@
             администратор нажимает на кнопку "Перейти к составлению сканворда". 
         </p>
 
-        <img src="./images/params_page.png"/>
+        <img src="./assets/images/params_page.png"/>
 
         <p>
             Система отображает страницу "Составление сканворда", представленную на рисунке, с заданными параметрами сканворда.
         </p>
 
-        <img src="./images/creating_scanword_page.png"/>
+        <img src="./assets/images/creating_scanword_page.png"/>
         <p>
             В правой части этой страницы расположен список понятий,
             который подгружает система в соответствии с выбором администратора, в центральной части находится сама сетка сканворда,
@@ -167,8 +280,8 @@
         </p>
 
         <div class="flexing">
-            <img src="./images/drag_word.png"/>
-            <img src="./images/drop_word.png"/> 
+            <img src="./assets/images/drag_word.png"/>
+            <img src="./assets/images/drop_word.png"/> 
         </div>
 
         <p>
@@ -185,8 +298,8 @@
         </p>
 
         <div class="flexing">
-            <img src="./images/clear_list_sw.png"/>
-            <img src="./images/not_clear_list_sw.png"/> 
+            <img src="./assets/images/clear_list_sw.png"/>
+            <img src="./assets/images/not_clear_list_sw.png"/> 
         </div>
 
         <p>
@@ -198,7 +311,7 @@
             на сетке. После редактирования параметров сканворда администратор нажимает на кнопку "Перейти к составлению сканворда". 
         </p>
 
-        <img src="./images/updating_params_page.png"/>
+        <img src="./assets/images/updating_params_page.png"/>
 
         <p>
             Система отображает страницу "Редактирование выбранного сканворда". Её наполнение совпадает с наполнением страницы
@@ -206,7 +319,7 @@
             сканворда.
         </p>
 
-        <img src="./images/updating_sw_page.png"/>
+        <img src="./assets/images/updating_sw_page.png"/>
 
         <p>
             После того, как редактирование сканворда закончено, администратор нажимает кнопку "Сохранить сканворд". И система отправляет 
@@ -227,8 +340,8 @@
         </p>
 
         <div class="flexing">
-            <img src="./images/disabled_button_dict.png"/>
-            <img src="./images/not_disabled_button_dict.png"/> 
+            <img src="./assets/images/disabled_button_dict.png"/>
+            <img src="./assets/images/not_disabled_button_dict.png"/> 
         </div>
 
         <p>
@@ -244,8 +357,8 @@
         </p>
 
         <div class="flexing">
-            <img src="./images/dict_list.png"/>
-            <img src="./images/search_dict.png"/> 
+            <img src="./assets/images/dict_list.png"/>
+            <img src="./assets/images/search_dict.png"/> 
         </div>
 
 
@@ -258,13 +371,13 @@
         </p>
 
         <div class="flexing">
-            <img src="./images/modal_window.png"/>
-            <img src="./images/modal_window_gallery.png"/> 
+            <img src="./assets/images/modal_window.png"/>
+            <img src="./assets/images/modal_window_gallery.png"/> 
         </div>
 
         <div class="flexing">
-            <img src="./images/modal_window_open_media.png"/>
-            <img src="./images/modal_window_audio.png"/> 
+            <img src="./assets/images/modal_window_open_media.png"/>
+            <img src="./assets/images/modal_window_audio.png"/> 
         </div>
 
         <p>
@@ -273,8 +386,8 @@
         </p>
 
         <div class="flexing">
-            <img src="./images/incorrect_adding_word1.png"/>
-            <img src="./images/incorrect_adding_word2.png"/> 
+            <img src="./assets/images/incorrect_adding_word1.png"/>
+            <img src="./assets/images/incorrect_adding_word2.png"/> 
         </div>
 
         <h3 id="gallery">Работа с галереей</h3>
@@ -289,8 +402,8 @@
         </p>
 
         <div class="flexing">
-            <img src="./images/gallery_page.png"/>
-            <img src="./images/incorrect_content_image.png"/> 
+            <img src="./assets/images/gallery_page.png"/>
+            <img src="./assets/images/incorrect_content_image.png"/> 
         </div>
         
 
@@ -306,8 +419,8 @@
         </p>
 
         <div class="flexing">
-            <img src="./images/audio_page.png"/>
-            <img src="./images/incorrect_content_audio.png"/> 
+            <img src="./assets/images/audio_page.png"/>
+            <img src="./assets/images/incorrect_content_audio.png"/> 
         </div>
 
     
@@ -317,8 +430,93 @@
         <h2 id="player">Игрок</h2>
 
         <p>
-            
+            Основная функция игрока – это разгадывание сканворда. 
+            Перед началом игры игрок должен выбрать сканворд новый или ранее сохранённый,
+            выбрав его из списка, который должна сформировать система. 
+            В процессе разгадывания игроку будет доступен выбор задания,
+            просмотр его определения, прослушивание мелодии и просмотр картинки из задания,
+            а также возможность взятия подсказки (от 1 до 3). 
+            Система будет контролировать количество взятых игроком подсказок. 
         </p>
+
+        <p>
+            В процессе разгадывания игрок будет вписывать,
+            удалять или изменять буквы в ячейках сетки, предусмотренных для ввода ответа.
+            Игрок заканчивает, когда все слова будут разгаданы верно,
+            для это будет реализована возможность проверки системой правильности сканворда.
+        </p>
+
+        <p>
+            Также игрок будет иметь возможность сохранить свой результат на любом шаге разгадывания. 
+        </p>
+
+        <h3 id="chose-scanword">Выбор сканворда для решения</h3>
+        <p>
+            Для выбора сканворда для решения необходимо кликнуть на один из предложенных сканвордов в списке.
+            При выборе пользователь может видеть название сканворда, его размеры, сколько всего вопросов в сканворде
+            и сколько из них уже решены. 
+        </p>
+
+        <img src="./assets/images/chose_scanword.png"/>
+
+        <h3 id="solve-scanword">Решение сканворда</h3>
+        <p>
+            Чтобы узнать вопрос для заполнения на сетке, необходимо кликнуть по номеру вопроса,
+            после чего откроется модальное окно с вопросом, а клетки для вписывания букв будут подсвечены. 
+        </p>
+
+        <div class="flexing">
+            <img src="./assets/images/get_question.png"/>
+            <img src="./assets/images/get_question_2.png"/> 
+        </div>
+
+        <p>
+            Сам процесс решения решения представляет собой заполнение сетки,
+            для этого нужно кликнуть в нужное место на сетке и вписать нужную букву с клавиатуры,
+            для исправления буквы необходимо выполнить те же действия,
+            исправлять заблокированные (серые) буквы нельзя.
+        </p>
+
+        <img src="./assets/images/solve_scanword.png"/>
+
+        <h3 id="check-correct">Проверка правильности решения</h3>
+
+        <p>
+            Проверка правильности происходит при нажатии кнопки проверить,
+            при этом все правильно написанные слова становятся заблокированными
+            и обновляется количество правильно решенных вопросов.
+        </p>
+
+        <img src="./assets/images/check_correct.png"/>        
+
+        <h3 id="save-result">Сохранение результата</h3>
+
+        <p>
+            Сохрание результата происходит при нажатии кнопки сохранить,
+            при этом все правильно решенные вопросы сохраняются в базу данных,
+            визуальных изменений на странице не проиходит.           
+        </p>
+        <h3 id="get-hint">Взятие подсказки</h3>
+        <p>
+            Взятие подсказки происходит по нажатию кнопки взять подсказку,
+            она доступна только в том случае если выбранный вопрос не заблокирован,
+            если вопрос заблокирован или не выбран кнопка не доспупна.          
+        </p>
+
+        <div class="flexing">
+            <img src="./assets/images/can_get_hint.png"/>
+            <img src="./assets/images/cant_get_hint.png"/> 
+        </div>
+
+        <p>
+            При нажатии кнопки, слово вставляется сразу в заблокированном виде.     
+        </p>
+        <img src="./assets/images/get_hint.png"/>
+        <p>
+            Если количество подсказок исчерпано, кнопка взятия подсказки пропадает с формы.     
+        </p>
+        <img src="./assets/images/hint_button_off.png"/>
+
 
     </div>
 </body>
