@@ -18,7 +18,7 @@ export const AuthPage = () => {
     }, [error, message,clearError])
 
     const [form, setForm] = useState({
-        login: "",
+        username: "",
         password: ""
     })
 
@@ -28,15 +28,16 @@ export const AuthPage = () => {
 
     const registerHandler = async () => {
         try {
-          const data = await request('/api/auth/register', 'POST', {...form})
-          message(data.message)
+            const data = await request('/api/auth/registerAdmin', 'POST', {...form})
+            message("Зареган")
         } catch (e) {}
     }
 
     const loginHandler = async () => {
         try {
-          const data = await request('/api/auth/login', 'POST', {...form})
-          auth.login(data.token, data.userId)
+          const data = await request('/api/auth/loginAdmin', 'POST', {...form})
+        //   auth.login(data.token, data.userId)
+          auth.login(data.token)
         } catch (e) {}
     }
 
@@ -47,12 +48,12 @@ export const AuthPage = () => {
                 <span className="card-title">Авторизация</span>
                 <div className="card-section-input">
                     <div className="input-field">
-                        <label htmlFor="login" className="label-for-input">Введите логин</label>
-                        <input 
+                        <label htmlFor="username" className="label-for-input">Введите логин</label>
+                        <input
                             placeholder="Введите логин"
-                            id="login" 
-                            type="text" 
-                            name="login"
+                            id="username"
+                            type="text"
+                            name="username"
                             className="yellow-input"
                             onChange={changeHandler}
                         />
