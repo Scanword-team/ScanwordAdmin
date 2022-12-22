@@ -46,7 +46,7 @@ export const DragState = ({children}) => {
     }
 
     const updateDataQuestionId = (newDataQuestionId) => {
-        setDataQuestionId(()=>newDataQuestionId)
+        setDataQuestionId(()=>Number(newDataQuestionId))
     }
 
     // const updateListwords = (newListwords) => {
