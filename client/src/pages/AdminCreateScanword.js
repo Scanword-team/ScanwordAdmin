@@ -142,7 +142,7 @@ export const AdminCreateScanword = () => {
     const saveScanword = async() => {
         if (!boolUpdate) {
             let size = [hvalue, vvalue]
-            const id_scan = new Date()
+            const id_scan = Number(new Date())
             const res = await request('/api/scanword/saving', 'POST', {scanword:scanword.map((el, index) => {
                 el.number = index +1
                 return el
