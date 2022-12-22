@@ -1,7 +1,7 @@
 const {Router} = require('express')
 const router = Router()
 
-let audio = ['/audio/barbariki.mp3']
+let audio = [{id:0, audio:'/audio/barbariki.mp3'}]
 
 // /api/audio/audio
 router.get(
@@ -21,7 +21,8 @@ router.post(
     '/audio',
     async (req, res) => {
     try {
-        audio = req.body.audio
+        audio = await req.body.audio
+        console.log(audio)
         res.status(200).json({audio: audio})
     }
     catch (e) {
