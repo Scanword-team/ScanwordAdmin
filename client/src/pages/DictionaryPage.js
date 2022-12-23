@@ -4,12 +4,14 @@ import { HeaderAdmin } from "../components/HeaderAdmin/HeaderAdmin"
 import { SettingContext } from "../context/SettingContext"
 import { useHttp } from "../hooks/http.hook"
 import { useMessage } from "../hooks/message.hook"
+import { useAuth } from "../hooks/auth.hook"
 
 
 
 export const DictionaryPage = () => {
     const message = useMessage()
     const {request} = useHttp()
+    const {token} = useAuth()
 
     const [nameDict, setNameDict] = useState('')
     const [externalDict, setExternalDict] = useState(null)
@@ -103,9 +105,11 @@ export const DictionaryPage = () => {
     const dictHandler = (event) => {
         if (Number(event.target.value)===0) {
             setLockButtonConfirm(true)
+            console.log("Пупа")
             setLocalDict("")
         } else {
             setLockButtonConfirm(false)
+            console.log("Лупа", event.target.value , event.target)
             setLocalDict(event.target.value)
         }
     }
@@ -115,7 +119,7 @@ export const DictionaryPage = () => {
         if (externalDict) {
             new Promise((resolve,revoke) => {
                 let reader = new FileReader()
-                reader.readAsText(externalDict, "Windows-1251")
+                reader.readAsText(externalDict, "UTF-8")
                 reader.onload = () => {
                     if ((String(reader.result.toLowerCase())).indexOf('img')!= -1 || (String(reader.result.toLowerCase())).indexOf('png')!= -1) {
                         revoke()
@@ -144,8 +148,8 @@ export const DictionaryPage = () => {
                 alert('Некорректное содержимое словаря, поэтому он не был загружен')
             })
         }
-        const res = await request('/api/scanword/createdict', 'POST', {nameDict:nameDict})
-        setLocalDict(res.newId)
+        const res = await request('/api/dict/create', 'POST', {name:nameDict}, {"Authorization": token})
+        setLocalDict(res.id)
         setPressButton(true)
     }
 
@@ -246,11 +250,11 @@ export const DictionaryPage = () => {
             const elem = {...elem_v}
             setModalAnswer(elem.answer)
             setModalQuestion(elem.question)
-            if (elem.srcAudio) {
-                setModalSrcAudio(elem.srcAudio)
+            if (elem.audio) {
+                setModalSrcAudio(elem.audio)
             }
-            if (elem.src) {
-                setModalSrc(elem.src)
+            if (elem.image) {
+                setModalSrc(elem.image)
             }
             if (elem.id) {
                 setModalId(elem.id)
@@ -273,6 +277,7 @@ export const DictionaryPage = () => {
     }
 
     const clickSaveCreateItem = () => {
+        
         if (modalAnswer && modalQuestion) {
             if (listwords.find((el) => {
                 if ((el.answer).toLowerCase() === modalAnswer.toLowerCase()) {
@@ -292,30 +297,28 @@ export const DictionaryPage = () => {
                             const newElem = {}
                             newElem.id = modalId
                             newElem.answer = modalAnswer
-                            newElem.question = modalQuestion
+                            newElem.question = modalQuestion                            
                             if (modalSrc) {
-                                newElem.src = modalSrc
-                                newElem.srcAudio = ''
+                                newElem.imageId = modalSrc.id
+                                newElem.audioId = null
+                                newElem.type = 'image'
+                            } else if (modalSrcAudio) {
+                                newElem.audioId = modalSrcAudio.id
+                                newElem.imageId = null
+                                newElem.type = 'audio'
                             } else {
-                                newElem.src = ''
+                                newElem.imageId = null
+                                newElem.audioId = null
+                                newElem.type = 'text'
                             }
-                            if (modalSrcAudio) {
-                                newElem.srcAudio = modalSrcAudio
-                                newElem.src = ''
-                            } else {
-                                newElem.srcAudio = ''
-                            }
-                            if (newElem.src === '') {
-                                delete newElem.src
-                            }
-                            if (newElem.srcAudio === '') {
-                                delete newElem.srcAudio
-                            }
-                            if (!newElem.idDict) {
+                            if (!newElem.dictionaryId) {
                                 // if (Number(localDict)!==0) {
-                                    newElem.idDict = Number(localDict)
+                                    newElem.dictionaryId = Number(localDict)
+                                    //newElem.dictionary.name = nameDict
                                 // }
                             } 
+
+                            console.log(newElem)
                             return newElem
                             // elem.answer = modalAnswer
                             // elem.question = modalQuestion
@@ -351,28 +354,19 @@ export const DictionaryPage = () => {
                     const elem = {}
                     elem.answer = modalAnswer
                     elem.question = modalQuestion
+                    elem.type = 'text'
                     if (modalSrc) {
-                        elem.src = modalSrc
-                        elem.srcAudio = ''
-                    } else {
-                        elem.src = ''
-                    }
-                    if (modalSrcAudio) {
-                        elem.srcAudio = modalSrcAudio
-                        elem.src = ''
-                    } else {
-                        elem.srcAudio = ''
+                        elem.imageId = modalSrc.id
+                        elem.type = 'image'
+                    } else if (modalSrcAudio) {
+                        elem.audioId = modalSrcAudio.id
+                        elem.type = 'audio'
                     }
                     elem.id = new Date() + String(elem.answer) + String(elem.question)
-                    if (elem.src === '') {
-                        delete elem.src
-                    }
-                    if (elem.srcAudio === '') {
-                        delete elem.srcAudio
-                    }
-                    if (!elem.idDict) {
+                    
+                    if (!elem.dictionaryId) {
                         // if (Number(localDict)!==0) {
-                            elem.idDict = Number(localDict)
+                            elem.dictionaryId = Number(localDict)
                         // }
                     } 
                     if (listwords) {
@@ -427,6 +421,7 @@ export const DictionaryPage = () => {
     }
 
     const saveDict = async() => {
+        
         const updateWords = []
         const insertWords = []
         const deleteWords = []
@@ -439,15 +434,17 @@ export const DictionaryPage = () => {
                         } 
                     })
                     if (elWordDB) { // Если нашлось слово с таким id в массиве слов из БД
-                        if ((elem.src && elWordDB.src && elem.src !== elWordDB.src) || (elem.srcAudio && elWordDB.srcAudio && elem.srcAudio !== elWordDB.srcAudio) || (elem.src && !elWordDB.src) || (elem.srcAudio && !elWordDB.srcAudio) || (!elem.src && elWordDB.src) || (!elem.srcAudio && elWordDB.srcAudio) || (elem.answer !== elWordDB.answer) || (elem.question !== elWordDB.question)) {
+                        if ((elem.imageId && elWordDB.imageId && elem.imageId !== elWordDB.imageId) || (elem.audioId && elWordDB.audioId && elem.audioId !== elWordDB.audioId) || (elem.imageId && !elWordDB.imageId) || (elem.audioId && !elWordDB.audioId) || (!elem.imageId && elWordDB.imageId) || (!elem.audioId && elWordDB.audioId) || (elem.answer !== elWordDB.answer) || (elem.question !== elWordDB.question)) {
                             updateWords.push(elem)
                         }
                     } else {
+                        elem.id = null
                         insertWords.push(elem)
                     }
                 } else {
-                    if (!elem.idDict) {
-                        elem.idDict = localDict
+                    if (!elem.dictionaryId) {
+                        elem.id = null
+                        elem.dictionaryId = localDict
                     }
                     insertWords.push(elem)
                 }
@@ -470,14 +467,24 @@ export const DictionaryPage = () => {
                 })
             }
         }
+
+        console.log(listwords)
+        console.log(insertWords)
+        console.log(updateWords)
+        console.log(deleteWords)
+
         if (insertWords.length!==0) {
-            const res = request('/api/scanword/insertindict', 'POST', {insertWords:insertWords})
+            const res = request('/api/question/saveAll', 'POST', insertWords, {"Authorization": token})
         }
+
         if (updateWords.length!==0) {
-            const res = request('/api/scanword/updateindict', 'PUT', {updateWords:updateWords})
+            const res = request('/api/question/saveAll', 'POST', updateWords, {"Authorization": token})
         }
+
+        
+
         if (deleteWords.length!==0) {
-            const res = request('/api/scanword/deleteindict', 'DELETE', {deleteWords:deleteWords})
+            const res = request('/api/question/deleteAll', 'DELETE', deleteWords, {"Authorization": token})
         }
         
     }
@@ -697,14 +704,14 @@ export const DictionaryPage = () => {
                                     }
                                     { modalSrc && 
                                         <div className="modal-src">
-                                            <img src={modalSrc}/>
+                                            <img src={modalSrc.image}/>
                                             <button onClick={e => setModalSrc(null)}>&#10060;</button>
                                         </div>
                                     } 
                                     { modalSrcAudio && 
                                         <div className="modal-src">
                                             <button onClick={e => setModalSrcAudio(null)}>&#10060;</button>
-                                            <audio src={modalSrcAudio} controls={true}></audio>
+                                            <audio src={modalSrcAudio.audio} controls={true}></audio>
                                         </div>
                                     }
                                     <div>
@@ -727,7 +734,7 @@ export const DictionaryPage = () => {
                                                     <div onClick={e => clickItemInList(src)} className="item-in-list" key={src}>
                                                         <div className="itemListik">
                                                             <div className="itemScanword">
-                                                                <img src={src} alt="картинка"/>
+                                                                <img src={src.image} alt="картинка"/>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -744,7 +751,7 @@ export const DictionaryPage = () => {
                                                     <div onClick={e => clickItemInList(src)} className="item-in-list" key={src}>
                                                         <div className="itemListik">
                                                             <div className="itemScanword">
-                                                                <audio src={src} controls={true}></audio>
+                                                                <audio src={src.audio} controls={true}></audio>
                                                             </div>
                                                         </div>
                                                     </div>
