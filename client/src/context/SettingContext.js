@@ -150,16 +150,13 @@ export const SettingState = ({children}) => {
 
     const setGalleryInDB = async() => {
         try {
-            console.log(gallery)
-            const res = await request('/api/image/saveAll', 'POST', {gallery}, {['Authorization']:token})
+            const res = await request('/api/image/saveAll', 'POST', gallery, {['Authorization']:token})
         } catch(e) { }
     }
 
     const getGalleryFromDB = async() => {
         try {
-            console.log("send")
             const res = await request('/api/image','GET',null,  {['Authorization']:token})
-            console.log(res)
             if (res && res.length !== 0) {
                 setGallery(res)
             }
