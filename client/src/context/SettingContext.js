@@ -178,9 +178,9 @@ export const SettingState = ({children}) => {
                 }
             } catch(e) { }
         } else {
-            const res = await request('/api/scanword/wordsdb', "POST", {idDict: localId, idsWords: null})
-            setListwords([...res.words])
-            setWordDB([...res.words])
+            const res = await request('/api/question/getByDictId/'+ localId, "GET", null,{"Authorization": token})
+            setListwords([...res])
+            setWordDB([...res])
         }
     }
 
