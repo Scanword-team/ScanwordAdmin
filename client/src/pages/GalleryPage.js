@@ -19,6 +19,7 @@ export const GalleryPage = () => {
                 let path = reader.result // path - то, что хранится в БД
                 const image = new Image()
                 image.src = path
+                
                 image.onload = function() {
                     if (gallery && gallery.length !== 0) {
                         updateGallery([...gallery, {id: Number(new Date()), picture: path}])
