@@ -12,12 +12,14 @@ import { HeaderAdmin } from "../components/HeaderAdmin/HeaderAdmin"
 import { SettingContext } from "../context/SettingContext"
 import { Link } from "react-router-dom"
 import { useHttp } from "../hooks/http.hook"
+import { useAuth } from "../hooks/auth.hook"
 
 
 
 
 export const AdminCreateScanword = () => {
     const {request} = useHttp()
+    const {token} = useAuth()
     const {
         getWordDBFromDB, 
         scanword, 
@@ -143,10 +145,37 @@ export const AdminCreateScanword = () => {
         if (!boolUpdate) {
             let size = [hvalue, vvalue]
             const id_scan = Number(new Date())
-            const res = await request('/api/scanword/saving', 'POST', {scanword:scanword.map((el, index) => {
-                el.number = index +1
-                return el
-            }), size, hint, id: id_scan, name: id_scan})
+
+
+            const sc = await request('/api/scanword/create', 'POST', {
+                name: id_scan,
+                width: hvalue,
+                height: vvalue,
+                prompt: hint, 
+            }, {['Authorization']:token})
+
+            // console.log(sc)
+            // console.log(scanword)
+            let nn = 1
+            
+            scanword.forEach(s => {
+                s.scanword = sc
+                s.number = nn++
+            })
+
+            console.log(scanword)
+
+
+
+
+            const res = await request('/api/scanwordQuestion/createWithAllDTO', 'POST', scanword, {['Authorization']:token} )
+
+            
+
+            // const res = await request('/api/scanword/saving', 'POST', {scanword:scanword.map((el, index) => {
+            //     el.number = index +1
+            //     return el
+            // }), size, hint, id: id_scan, name: id_scan})
             changeHint('',1) 
             changeDict('',"")
             changeInputVertical('',10)

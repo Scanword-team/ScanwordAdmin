@@ -172,9 +172,10 @@ export const SettingState = ({children}) => {
                     setWordDB([...res.words])
                 }
                 else {
-                    const res = await request('/api/scanword/wordsdb', "POST", {idDict: dict, idsWords: null})
-                    setListwords([...res.words])
-                    setWordDB([...res.words])
+                    console.log(localId)
+                    const res = await request('/api/question/getByDictId/'+ dict, "GET", null,{"Authorization": token})
+                    setListwords([...res])
+                    setWordDB([...res])
                 }
             } catch(e) { }
         } else {
