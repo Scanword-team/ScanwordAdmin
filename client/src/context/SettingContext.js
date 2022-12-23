@@ -103,8 +103,20 @@ export const SettingState = ({children}) => {
 
     const updateListScanwords = async () =>{
         try {
-            const res = await request('/api/scanword/getscanwords')
-            setListScanwords([...res.scanwords])
+
+            const res = await request('/api/scanword', 'GET', null, {['Authorization']:token})
+            
+            for (const s of res) {
+                const links = await request('/api/scanwordQuestion/getAllByScanword', 'POST', s, {['Authorization']:token})
+                delete links.scanword
+                s.questions = links
+            }
+
+            console.log(res)
+
+
+            // const res = await request('/api/scanword/getscanwords')
+            setListScanwords([...res])
         } catch(e) { }
     }
 
@@ -167,18 +179,18 @@ export const SettingState = ({children}) => {
         if (!localId) {
             try {
                 if (boolUpdate) {
-                    const res = await request('/api/scanword/wordsdb', "POST", {idDict: dict, idsWords: scanword.map(element => element.questionId)})
-                    setListwords([...res.words])
-                    setWordDB([...res.words])
+                    // const res = await request('/api/scanword/wordsdb', "POST", {idDict: dict, idsWords: scanword.map(element => element.questionId)})
+                    // setListwords([...res.words])
+                    // setWordDB([...res.words])
                 }
                 else {
-                    console.log(localId)
+                    console.log("ggg", boolUpdate)
                     const res = await request('/api/question/getByDictId/'+ dict, "GET", null,{"Authorization": token})
                     setListwords([...res])
                     setWordDB([...res])
                 }
             } catch(e) { }
-        } else {
+        } else {            
             const res = await request('/api/question/getByDictId/'+ localId, "GET", null,{"Authorization": token})
             setListwords([...res])
             setWordDB([...res])
