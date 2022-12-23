@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import { useHttp } from "../hooks/http.hook";
 import { DragContext } from "./DragContext";
+import {useAuth} from "../hooks/auth.hook";
 
 export const SettingContext = createContext({
     hvalue: 10,
@@ -17,6 +18,7 @@ export const SettingContext = createContext({
     listScanwords: null,
     boolUpdate: false,
     gallery: null,
+    image: null,
     audio: null,
     id_scanword: null,
     changeId_scanword: () => {},
@@ -47,7 +49,7 @@ export const SettingState = ({children}) => {
 
     
     const {request} = useHttp()
-
+    const {token} = useAuth()
     const [audio, setAudio] = useState(null) // ['/src/e.mp3', '' , '']
     const [gallery, setGallery] = useState(null) // ['/src/e.png', '' , '']
     const [hvalue, setHValue] = useState(10) // количество ячеек по вертикали
@@ -77,15 +79,16 @@ export const SettingState = ({children}) => {
 
     const setAudioInDB = async() => {
         try {
-            const res = await request('/api/audio/audio', 'POST', {audio: audio})
+            const res = await request('/api/audio/saveAll', 'POST', audio, {['Authorization']:token})
         } catch(e) { }
     }
 
     const getAudioFromDB = async() => {
         try {
-            const res = await request('/api/audio/audio')
-            if (res.audio && res.audio.length !== 0) {
-                setAudio(res.audio)
+            const res = await request('/api/audio/','GET',null,  {['Authorization']:token})
+            console.log(res)
+            if (res && res.length !== 0) {
+                setAudio(res)
             }
         } catch(e) { }
     }
@@ -120,8 +123,11 @@ export const SettingState = ({children}) => {
 
     const updateListDicts = async () =>{
         try {
-            const res = await request('/api/scanword/namedicts')
-            setListDicts([...res.dictionaries])
+            // const headers = new Headers();
+            // headers.append('Authorization',token);
+            const res = await request('/api/dict','GET',null,  {['Authorization']:token})
+            // const res = await request('/api/dict','GET',null,headers)
+            setListDicts([...res])
         } catch(e) { }
     }
 
@@ -144,15 +150,18 @@ export const SettingState = ({children}) => {
 
     const setGalleryInDB = async() => {
         try {
-            const res = await request('/api/gallery/gallery', 'POST', {gallery: gallery})
+            console.log(gallery)
+            const res = await request('/api/image/saveAll', 'POST', {gallery}, {['Authorization']:token})
         } catch(e) { }
     }
 
     const getGalleryFromDB = async() => {
         try {
-            const res = await request('/api/gallery/gallery')
-            if (res.gallery && res.gallery.length !== 0) {
-                setGallery(res.gallery)
+            console.log("send")
+            const res = await request('/api/image','GET',null,  {['Authorization']:token})
+            console.log(res)
+            if (res && res.length !== 0) {
+                setGallery(res)
             }
         } catch(e) { }
     }

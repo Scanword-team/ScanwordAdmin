@@ -64,7 +64,7 @@ export const GalleryPage = () => {
                             <div className="item-in-list" key={src.id}>
                                 <div className="itemListik">
                                         <div className="itemScanword">
-                                            <img src={src.picture} alt="картинка"/>
+                                            <img src={src.image} alt="картинка"/>
                                         </div>
                                         <button onClick={e => deleteHandler(src.id)}>Удалить</button>
                                 </div>
