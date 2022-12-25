@@ -15,15 +15,15 @@ export const AudioPage = () => {
 
     const ftchStopList = async() => {
         try {
-            
-            const res = await request('/api/audio/used','GET',null,  {['Authorization']:token})
+            let token2 = JSON.parse(localStorage.getItem("userData")).token            
+            const res = await request('/api/audio/used','GET',null,  {['Authorization']:token2})
             setStopList([...res])
         } catch(e) { }
     }
 
     useEffect(() => {
-        getAudioFromDB()
         ftchStopList()
+        getAudioFromDB()        
     }, [])
 
     useEffect(() => {

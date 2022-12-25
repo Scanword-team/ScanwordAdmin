@@ -85,7 +85,7 @@ export const AuthPage = () => {
                     >
                         Регистрация
                     </button>
-                    <a href="http://localhost:4200"> sdfsdfsdf</a>
+                    <a href="http://localhost:4200"> Войти как игрок</a>
                 </div>
                 
             </div>

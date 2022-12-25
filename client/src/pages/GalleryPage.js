@@ -2,15 +2,26 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { CommonHeader } from "../components/CommonHeader/CommonHeader"
 import { HeaderAdmin } from "../components/HeaderAdmin/HeaderAdmin"
 import { SettingContext } from "../context/SettingContext"
+import { useHttp } from "../hooks/http.hook"
 
 export const GalleryPage = () => {
     const {gallery, updateGallery, getGalleryFromDB,setGalleryInDB} = useContext(SettingContext)
     const fileInput = useRef()
+    const {request} = useHttp()
 
     const [stopList, setStopList] = useState([])
 
+    const ftchStopList = async() => {
+        try {
+            let token2 = JSON.parse(localStorage.getItem("userData")).token            
+            const res = await request('/api/image/used','GET',null,  {['Authorization']:token2})
+            setStopList([...res])
+        } catch(e) { }
+    }
+
     useEffect(() => {
         getGalleryFromDB()
+        ftchStopList()
     }, [])
 
     const fileHandler = () => {
@@ -48,7 +59,7 @@ export const GalleryPage = () => {
                 return el
             }
         })
-        if (stopElement) {
+        if (!stopElement) {
             alert('Эта картинка содержится в сканвордах, её нельзя удалить')
         } else {
             updateGallery(gallery.filter((el) => {
