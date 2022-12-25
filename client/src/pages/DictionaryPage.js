@@ -79,18 +79,32 @@ export const DictionaryPage = () => {
             while (x<search.length) {
                 if (search[x] === '?') {
                     if (x===0) {
-                        resReg += '^[а-яА-Я]{1}'
+                        resReg += '^[а-яА-Я]{1}$'
+                    } else if (x===search.length-1){
+                        resReg += '[а-яА-Я]{1}$'
                     } else {
-                        resReg += '[а-яА-Я]{1}'
+                        resReg += '[а-яА-Я]{1}$'
                     }
                 } else if (search[x] === "*") {
                     resReg += '.+'
                 } else {
-                    resReg += `[${search[x]}]{1}`
+                    if (x===0) {
+                        resReg += `^[${search[x]}]{1}`
+                    } else {
+                        resReg += `[${search[x]}]{1}`
+                    }
+                    
                 }
                 x++
             }
+            if (resReg[resReg.length-1] === "$") {
+                resReg = resReg.split("$").join("")
+                resReg += "$"
+            } else { // можно будет убрать
+                resReg = resReg.split("$").join("")
+            }
             const reg = new RegExp(resReg)
+            console.log(resReg)
             setLocalListWords(listwords.filter((elem) => {
                 if (reg.test(elem.answer)) {
                     return elem

@@ -21,6 +21,7 @@ export const AudioPage = () => {
                 let path = reader.result // path - то, что хранится в БД
                 const audio1 = new Audio()
                 audio1.src = path
+                console.log(path)
                 let playPromise = audio1.play()
                 if (playPromise!==undefined) {
                     playPromise.then(function() {
