@@ -33,6 +33,8 @@ export const DictionaryPage = () => {
     const [modalId, setModalId] = useState(null)
     const [modalSrcAudio, setModalSrcAudio] = useState('')
 
+    const [stopList, setStopList] = useState([])
+
 
 
     const {
@@ -42,12 +44,20 @@ export const DictionaryPage = () => {
         gallery,
         getGalleryFromDB,
         audio, 
+        dict,
         getAudioFromDB,
         wordDB, // слова, которые пришли с БД
         listwords, // слова, которые будут вообще
         updateListwords,
         updateWordDB
     } = useContext(SettingContext)
+
+    const ftchStopList = async(iddict) => {
+        try {
+            const res = await request('/api/question/getUsedByDictId/'+ iddict, "GET", null,{"Authorization": token})
+            setStopList([...res])
+        } catch (e) {}
+    }
 
     useEffect(() => {
         updateListDicts() // Получаем список в select
@@ -164,6 +174,7 @@ export const DictionaryPage = () => {
         }
         const res = await request('/api/dict/create', 'POST', {name:nameDict}, {"Authorization": token})
         setLocalDict(res.id)
+        ftchStopList(res.id)
         setPressButton(true)
     }
 
@@ -175,20 +186,31 @@ export const DictionaryPage = () => {
         })
         setNameDict(elemDict.name)
         getWordDBFromDB(localDict)
+        console.log(localDict)
+        ftchStopList(localDict)
         setPressButton(true)
     }
 
     const clickDeleteItem = (elem) => {
-        updateListwords(listwords.filter((element) => {
-            if (elem.id !== element.id) {
-                return element
+        const stopElement = stopList.find((el) => {
+            if (el.id === elem.id) {
+                return el
             }
-        }))
-        setLocalListWords(listwords.filter((element) => {
-            if (elem.id !== element.id) {
-                return element
-            }
-        }))
+        })
+        if (!stopElement) {
+            alert('Это слово содержится в сканвордах, его нельзя удалить или изменить')
+        } else {
+            updateListwords(listwords.filter((element) => {
+                if (elem.id !== element.id) {
+                    return element
+                }
+            }))
+            setLocalListWords(listwords.filter((element) => {
+                if (elem.id !== element.id) {
+                    return element
+                }
+            }))
+        }
     }
 
     const clickSortAlphabetUp = () => {
@@ -260,23 +282,32 @@ export const DictionaryPage = () => {
     }
 
     const clickItem = (elem_v=null) => {
-        if (elem_v) {
-            const elem = {...elem_v}
-            setModalAnswer(elem.answer)
-            setModalQuestion(elem.question)
-            if (elem.audio) {
-                setModalSrcAudio(elem.audio)
+        const stopElement = stopList.find((el) => {
+            if (el.id === elem_v.id) {
+                return el
             }
-            if (elem.image) {
-                setModalSrc(elem.image)
-            }
-            if (elem.id) {
-                setModalId(elem.id)
-            }
+        })
+        if (!stopElement) {
+            alert('Это слово содержится в сканвордах, его нельзя удалить или изменить')
         } else {
-            setModalAnswer("")
+            if (elem_v) {
+                const elem = {...elem_v}
+                setModalAnswer(elem.answer)
+                setModalQuestion(elem.question)
+                if (elem.audio) {
+                    setModalSrcAudio(elem.audio)
+                }
+                if (elem.image) {
+                    setModalSrc(elem.image)
+                }
+                if (elem.id) {
+                    setModalId(elem.id)
+                }
+            } else {
+                setModalAnswer("")
+            }
+            setClickedItem(true)
         }
-        setClickedItem(true)
     }
 
     const clickCancelCreateItem = () => {

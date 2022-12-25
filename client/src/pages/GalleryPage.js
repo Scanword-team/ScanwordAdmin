@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { CommonHeader } from "../components/CommonHeader/CommonHeader"
 import { HeaderAdmin } from "../components/HeaderAdmin/HeaderAdmin"
 import { SettingContext } from "../context/SettingContext"
@@ -6,6 +6,8 @@ import { SettingContext } from "../context/SettingContext"
 export const GalleryPage = () => {
     const {gallery, updateGallery, getGalleryFromDB,setGalleryInDB} = useContext(SettingContext)
     const fileInput = useRef()
+
+    const [stopList, setStopList] = useState([])
 
     useEffect(() => {
         getGalleryFromDB()
@@ -41,11 +43,20 @@ export const GalleryPage = () => {
     }
 
     const deleteHandler = (id) => {
-        updateGallery(gallery.filter((el) => {
-            if (el.id !== id) {
+        const stopElement = stopList.find((el) => {
+            if (el.id === id) {
                 return el
             }
-        }))
+        })
+        if (stopElement) {
+            alert('Эта картинка содержится в сканвордах, её нельзя удалить')
+        } else {
+            updateGallery(gallery.filter((el) => {
+                if (el.id !== id) {
+                    return el
+                }
+            }))
+        }
     }
 
     return (

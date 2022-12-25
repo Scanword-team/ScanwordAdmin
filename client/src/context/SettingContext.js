@@ -137,6 +137,7 @@ export const SettingState = ({children}) => {
         try {
             // const headers = new Headers();
             // headers.append('Authorization',token);
+            console.log(token)
             const res = await request('/api/dict','GET',null,  {['Authorization']:token})
             // const res = await request('/api/dict','GET',null,headers)
             setListDicts([...res])

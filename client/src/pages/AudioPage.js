@@ -1,15 +1,36 @@
-import { useContext, useEffect, useRef } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { CommonHeader } from "../components/CommonHeader/CommonHeader"
 import { HeaderAdmin } from "../components/HeaderAdmin/HeaderAdmin"
 import { SettingContext } from "../context/SettingContext"
+import { useAuth } from "../hooks/auth.hook"
+import { useHttp } from "../hooks/http.hook"
 
 export const AudioPage = () => {
     const {audio, updateAudio, getAudioFromDB,setAudioInDB} = useContext(SettingContext)
     const fileInput = useRef()
+    const {request} = useHttp()
+    const {token} = useAuth()
+
+    const [stopList, setStopList] = useState([])
+
+    const ftchStopList = async() => {
+        try {
+            
+            const res = await request('/api/audio/used','GET',null,  {['Authorization']:token})
+            setStopList([...res])
+        } catch(e) { }
+    }
 
     useEffect(() => {
         getAudioFromDB()
+        ftchStopList()
     }, [])
+
+    useEffect(() => {
+        console.log('s', stopList)
+    }, [stopList])
+
+    
 
 
 
@@ -53,11 +74,20 @@ export const AudioPage = () => {
     }
 
     const deleteHandler = (id) => {
-        updateAudio(audio.filter((el) => {
-            if (el.id !== id) {
+        const stopElement = stopList.find((el) => {
+            if (el.id === id) {
                 return el
             }
-        }))
+        })
+        if (stopElement) {
+            alert('Эта мелодия содержится в сканвордах, её нельзя удалить')
+        } else {
+            updateAudio(audio.filter((el) => {
+                if (el.id !== id) {
+                    return el
+                }
+            }))
+        }
     }
 
     return (
