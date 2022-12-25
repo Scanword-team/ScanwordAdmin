@@ -56,7 +56,7 @@ export const ListWords = () => {
         if (wordDB) {
             if (filter.filterMelody && filter.filterImage) {
                 const newListwords = wordDB.filter((worddb) => {
-                    if (worddb.srcAudio || worddb.src) {
+                    if (worddb.audio || worddb.image) {
                         if (worddb != null) {
                             const elementInScanword = scanword.find((elem) => {
                                 if (Number(elem.questionId) === worddb.id) {
@@ -73,7 +73,7 @@ export const ListWords = () => {
             }
             else if (filter.filterImage) {
                 const newListwords = wordDB.filter((worddb) => {
-                    if (worddb.src) {
+                    if (worddb.image) {
                         if (worddb != null) {
                             const elementInScanword = scanword.find((elem) => {
                                 if (Number(elem.questionId) === worddb.id) {
@@ -90,7 +90,7 @@ export const ListWords = () => {
             }
             else if (filter.filterMelody) {
                 const newListwords = wordDB.filter((worddb) => {
-                    if (worddb.srcAudio) {
+                    if (worddb.audio) {
                         if (worddb != null) {
                             const elementInScanword = scanword.find((elem) => {
                                 if (Number(elem.questionId) === worddb.id) {
@@ -117,7 +117,7 @@ export const ListWords = () => {
                 }))
             }
         }
-    }, [filter])
+    }, [filter,scanword])
 
     const handlerDropWords = () => {
         let div=document.querySelector(".words");
