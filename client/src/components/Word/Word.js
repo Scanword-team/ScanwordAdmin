@@ -29,8 +29,10 @@ const Word = (props) => {
                 num = num + str[index];
             }
             var kol = Number(num);// kol = 0
+
             
             kol += myDragonFlag.length;
+
             if (kol<m) {
                 kol = kol - myDragonFlag.length;
                 let ved1 = 0

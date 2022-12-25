@@ -3,14 +3,12 @@ import { useContext } from "react"
 import { AuthContext } from "../context/AuthContext"
 import { CommonHeader } from "../components/CommonHeader/CommonHeader"
 import { HeaderAdmin } from "../components/HeaderAdmin/HeaderAdmin"
-
 const crc32 =require('crc-32')
 
 
 
 
-
-const htmlTrue = `1680075812`
+const htmlTrue = `181852628`
 
 export const InstructionPage = () => {
     const {isAuthenticated} = useContext(AuthContext)
@@ -29,6 +27,7 @@ export const InstructionPage = () => {
                 } else {
                     const info = await res.text()
                     const hash = crc32.str(info)
+                    console.log(hash)
                     if (String(hash) === htmlTrue) {
                         const link = document.createElement('a')
                         link.setAttribute('href', '/about.html')

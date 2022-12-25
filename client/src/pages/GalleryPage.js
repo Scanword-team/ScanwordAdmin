@@ -19,11 +19,12 @@ export const GalleryPage = () => {
                 let path = reader.result // path - то, что хранится в БД
                 const image = new Image()
                 image.src = path
+
                 image.onload = function() {
                     if (gallery && gallery.length !== 0) {
-                        updateGallery([...gallery, path])
+                        updateGallery([...gallery, {id: Number(new Date()), image: path}])
                     } else {
-                        updateGallery([path])
+                        updateGallery([{id: Number(new Date()), image: path}])
                     }
                 }
                 image.onerror = function() {
@@ -39,9 +40,9 @@ export const GalleryPage = () => {
         setGalleryInDB()
     }
 
-    const deleteHandler = (src) => {
+    const deleteHandler = (id) => {
         updateGallery(gallery.filter((el) => {
-            if (el !== src) {
+            if (el.id !== id) {
                 return el
             }
         }))
@@ -61,12 +62,12 @@ export const GalleryPage = () => {
                     <input className="input-image" ref={fileInput} onChange={e => fileHandler(e)} type="file" accept=".png" id="fileInput"/>
                     {gallery && gallery.map((src) => {
                         return (
-                            <div className="item-in-list" key={src}>
+                            <div className="item-in-list" key={src.id}>
                                 <div className="itemListik">
                                         <div className="itemScanword">
-                                            <img src={src} alt="картинка"/>
+                                            <img src={src.image} alt="картинка"/>
                                         </div>
-                                        <button onClick={e => deleteHandler(src)}>Удалить</button>
+                                        <button onClick={e => deleteHandler(src.id)}>Удалить</button>
                                 </div>
                             </div>
                         )

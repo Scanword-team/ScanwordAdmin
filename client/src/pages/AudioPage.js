@@ -11,6 +11,8 @@ export const AudioPage = () => {
         getAudioFromDB()
     }, [])
 
+
+
     const fileHandler = () => {
         const file = fileInput.current.files[0]
         if (file) {
@@ -23,9 +25,9 @@ export const AudioPage = () => {
                 if (playPromise!==undefined) {
                     playPromise.then(function() {
                         if (audio && audio.length !== 0) {
-                            updateAudio([...audio, path])
+                            updateAudio([...audio, {id: Number(new Date()), audio: path}])
                         } else {
-                            updateAudio([path])
+                            updateAudio([{id: Number(new Date()), audio: path}])
                         }
                         audio1.pause()
                     }).catch(function(error) {
@@ -50,9 +52,9 @@ export const AudioPage = () => {
         setAudioInDB()
     }
 
-    const deleteHandler = (src) => {
+    const deleteHandler = (id) => {
         updateAudio(audio.filter((el) => {
-            if (el !== src) {
+            if (el.id !== id) {
                 return el
             }
         }))
@@ -71,12 +73,12 @@ export const AudioPage = () => {
                     <input className="input-image" ref={fileInput} onChange={e => fileHandler(e)} type="file" accept=".mp3" id="fileInput"/>
                     {audio && audio.map((src) => {
                         return (
-                            <div className="item-in-list" key={src}>
+                            <div className="item-in-list" key={src.id}>
                                 <div className="itemListik">
                                         <div className="itemScanword">
-                                            <audio src={src} controls={true}></audio>
+                                            <audio src={src.audio} controls={true}></audio>
                                         </div>
-                                        <button onClick={e => deleteHandler(src)}>Удалить</button>
+                                        <button onClick={e => deleteHandler(src.id)}>Удалить</button>
                                 </div>
                             </div>
                         )

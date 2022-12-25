@@ -35,9 +35,8 @@ export const AuthPage = () => {
 
     const loginHandler = async () => {
         try {
-          const data = await request('/api/auth/loginAdmin', 'POST', {...form})
-        //   auth.login(data.token, data.userId)
-          auth.login(data.token)
+            const data = await request('/api/auth/loginAdmin', 'POST', {...form})
+            auth.login(data.token)
         } catch (e) {}
     }
 
@@ -86,7 +85,9 @@ export const AuthPage = () => {
                     >
                         Регистрация
                     </button>
+                    <a href="http://localhost:4200"> sdfsdfsdf</a>
                 </div>
+                
             </div>
         </>
     )

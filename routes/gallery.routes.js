@@ -1,7 +1,7 @@
 const {Router} = require('express')
 const router = Router()
 
-let gallery = ['/scanword.jpg']
+let gallery = [{id:0, picture:'/scanword.jpg'}]
 
 
 // /api/gallery/gallery
@@ -21,7 +21,8 @@ router.post(
     '/gallery',
     async (req, res) => {
     try {
-        gallery = req.body.gallery
+        gallery = await req.body.gallery
+        console.log(gallery)
         res.status(200).json({gallery: gallery})
     }
     catch (e) {

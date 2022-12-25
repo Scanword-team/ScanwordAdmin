@@ -27,8 +27,16 @@ export const ParamsScanwordPage = () => {
 
     useEffect(() => {
         updateListDicts()
+        if (!boolUpdate) {
+            updateScanword([])
+        }
+        changeDict(0)
         // console.log(scanword)
     }, [])
+
+    useEffect(() => {
+        console.log('dict', dict)
+    }, [dict])
 
     // useEffect(() => {
     //     changeHint('',1) 
@@ -137,9 +145,21 @@ export const ParamsScanwordPage = () => {
                             
                     </tbody>
                 </table>
-                <div className='center-main-button' >
-                    <Link to="/admin-create-scanword">ПЕРЕЙТИ К СОСТАВЛЕНИЮ СКАНВОРДА</Link>
-                </div>
+                {dict === 0 && 
+                    <div className='center-main-button' >
+                        <button onClick={() => alert('Вы должны выбрать словарь')}>ПЕРЕЙТИ К СОСТАВЛЕНИЮ СКАНВОРДА</button>
+                    </div>
+                }
+
+
+
+                        
+                
+                {dict !== 0 && 
+                    <div className='center-main-button' >
+                        <Link to="/admin-create-scanword">ПЕРЕЙТИ К СОСТАВЛЕНИЮ СКАНВОРДА</Link>
+                    </div>
+                }
             </div>
         </>
     )

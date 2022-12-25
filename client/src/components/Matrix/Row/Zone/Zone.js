@@ -69,9 +69,9 @@ export const Zone = (props) => {
         const dragFlag = dragitem; // dragflag = слово, которое взяли
         let itemScanword = {}
         itemScanword.questionId = dataQuestionId
-        itemScanword.dict = dict
+        // itemScanword.dict = dict
         if(onHorizon) {
-            itemScanword.direction = 0
+            itemScanword.direction = true
             var str = event.target.id;
             var index = str.indexOf("_")+1;
             var num = "";
@@ -125,7 +125,7 @@ export const Zone = (props) => {
             }
         }
         else {
-            itemScanword.direction = 1
+            itemScanword.direction = false
             var str = event.target.id;
             var index = str.indexOf("_");
             var num = "";

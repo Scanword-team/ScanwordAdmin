@@ -13,7 +13,9 @@ export const AdminUpdateScanword = () => {
         changeInputHorizon,
         changeInputVertical,
         changeHint,
-        changeBoolUpdate
+        changeBoolUpdate,
+        changeId_scanword,
+        changeDict
     } = useContext(SettingContext)
 
     useEffect(() => {
@@ -22,11 +24,26 @@ export const AdminUpdateScanword = () => {
 
 
     const clickItemScanword = (itemScanword) => {
-        updateScanword(itemScanword.questions)
-        changeInputHorizon('', itemScanword.size[0],1)
-        changeInputVertical('', itemScanword.size[1],1)
-        changeHint('', itemScanword.hint)
+        console.log(itemScanword)
+        const vScanword = []
+        itemScanword.questions.forEach(el => {
+            const newEl = {}
+            newEl.questionId = el.question.id
+            newEl.dict = el.question.dictionary.id
+            newEl.direction = el.direction === true ? 0 : 1
+            newEl.number = el.number
+            newEl.x = el.x
+            newEl.y = el.y
+            vScanword.push(newEl)
+        })
+        console.log(vScanword)
+        updateScanword(vScanword)
+        changeInputHorizon('', itemScanword.width,1)
+        changeInputVertical('', itemScanword.height,1)
+        changeHint('', itemScanword.prompt)
         changeBoolUpdate(true)
+        changeId_scanword(itemScanword.id)
+        changeDict(vScanword[0].dict)
     }
 
     return (
@@ -39,7 +56,7 @@ export const AdminUpdateScanword = () => {
                         {listScanwords && listScanwords.map((itemScanword) => {
                             return (
                                 <div className="link-to-scanword" key={itemScanword.id}>
-                                    <Link onClick={e => clickItemScanword(itemScanword)} to="/params-creating-scanword">
+                                    <Link onClick={e => clickItemScanword(itemScanword)} to="/admin-create-scanword">
                                             <div className="itemScanword">
                                                 <img src="scanword.jpg" alt="Сканворд"/>
                                                 <span>{itemScanword.id}</span>

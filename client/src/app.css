@@ -511,6 +511,26 @@ a {
     cursor: pointer;
 }
 
+.center-main-button button {
+    background-color: rgb(76, 220, 76);
+    color: black;
+    font-size: 150%;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: 600;
+    border: 2px solid black;
+    border-radius: 2%;
+    position: relative;
+    height: inherit;
+    text-align: center;
+    padding: 5px 10px;
+}
+
+.center-main-button button:hover {
+    background-color: green;
+    color: aliceblue;
+    cursor: pointer;
+}
+
 .center-main-button {
     margin-top: 50px;
     text-align: center;

@@ -12,12 +12,14 @@ import { HeaderAdmin } from "../components/HeaderAdmin/HeaderAdmin"
 import { SettingContext } from "../context/SettingContext"
 import { Link } from "react-router-dom"
 import { useHttp } from "../hooks/http.hook"
+import { useAuth } from "../hooks/auth.hook"
 
 
 
 
 export const AdminCreateScanword = () => {
     const {request} = useHttp()
+    const {token} = useAuth()
     const {
         getWordDBFromDB, 
         scanword, 
@@ -35,12 +37,18 @@ export const AdminCreateScanword = () => {
         updateListwords,
         changeBoolUpdate,
         updateWordDB,
-        wordDB
+        wordDB,
+        id_scanword, 
+        changeId_scanword
     } = useContext(SettingContext)
 
     useEffect(() => {
         getWordDBFromDB()
     }, [])
+
+    useEffect(() => {
+        console.log(listwords)
+    }, [listwords])
 
     useEffect(() => {
         if (scanword.length!==0) {
@@ -132,36 +140,108 @@ export const AdminCreateScanword = () => {
     }, [wordDB])
 
     
+    const recursion = (mas, id, zones) => {
+        zones.forEach((el) => {
+            if (el.id_word1===id) {
+                if (el.id_word2) {
+                    if (!mas.find((elem) => {
+                        if (elem === el.id_word2) {
+                            return elem
+                        }
+                    })) {
+                        mas.push(el.id_word2)
+                        recursion(mas, el.id_word2, zones)
+                    }
+                }
+            } else if (el.id_word2 === id) {
+                if (!mas.find((elem) => {
+                    if (elem === el.id_word1) {
+                        return elem
+                    }
+                })) {
+                    mas.push(el.id_word1)
+                    recursion(mas, el.id_word1, zones)
+                }
+            }
+        })
+    }
+
 
     const saveScanword = async() => {
-        if (!boolUpdate) {
-            let size = [hvalue, vvalue]
-            const res = await request('/api/scanword/saving', 'POST', {scanword, size, hint})
-            changeHint('',1) 
-            changeDict('',"")
-            changeInputVertical('',10)
-            changeInputHorizon('',10)
-            updateListDicts()
-            updateScanword([])
-            updateListwords()
-            updateWordDB([])
+        let zones_document = document.querySelectorAll('.zone')
+        let zones = []
+        zones_document.forEach((el) => {
+            zones.push(el)
+        })
+        zones = zones.map((zone) => {
+            const newZone = {}
+            newZone.id = zone.id
+            if (zone.getAttribute('data-countword')) {
+                newZone.id_word1 = Number(zone.getAttribute('data-word'))
+            }
+            if (Number(zone.getAttribute('data-countword')) === 2) {
+                newZone.id_word2 = Number(zone.getAttribute('data-word2'))
+            }
+            zone = {...newZone}
+            return zone
+        })
+
+        if (scanword.length!==0) {
+            const mas  = []
+            mas.push(Number(scanword[0].questionId))
+            recursion(mas, Number(scanword[0].questionId), zones)
+            if (mas.length === scanword.length) {
+                if (!boolUpdate) {
+                    let size = [hvalue, vvalue]
+                    const id_scan = Number(new Date())
+                    const sc = await request('/api/scanword/create', 'POST', {
+                        name: id_scan,
+                        width: hvalue,
+                        height: vvalue,
+                        prompt: hint, 
+                    }, {['Authorization']:token})
+                    let nn = 1
+                    scanword.forEach(s => {
+                        s.scanword = sc
+                        s.number = nn++
+                    })
+                    const res = await request('/api/scanwordQuestion/createWithAllDTO', 'POST', scanword, {['Authorization']:token} )
+                    changeHint('',1) 
+                    changeDict('',"")
+                    changeInputVertical('',10)
+                    changeInputHorizon('',10)
+                    updateListDicts()
+                    updateScanword([])
+                    updateListwords(null)
+                    updateWordDB([])
+                }
+                else {
+                    let size = [hvalue, vvalue]
+                    const res = await request('/api/scanword/saving', 'PUT', {scanword:scanword.map((el, index) => {
+                        el.number = index +1
+                        return el
+                    }), size, hint, id: id_scanword, name: id_scanword})
+                    changeHint('',1) 
+                    changeDict('',"")
+                    changeInputVertical('',10)
+                    changeInputHorizon('',10)
+                    updateListDicts()
+                    updateScanword([])
+                    updateListwords(null)
+                    updateWordDB([])
+                    changeBoolUpdate(false)
+                    changeId_scanword(null)
+                }
+                window.location.href = '/'
+            } else {
+                alert('Это не сканворд. Не все слова пересекаются')
+            }
+        } else {
+            alert('Заполните сетку сканворда')
         }
-        else {
-            let size = [hvalue, vvalue]
-            const res = await request('/api/scanword/saving', 'PUT', {scanword, size, hint})
-            changeHint('',1) 
-            changeDict('',"")
-            changeInputVertical('',10)
-            changeInputHorizon('',10)
-            updateListDicts()
-            updateScanword([])
-            updateListwords(null)
-            updateWordDB([])
-            changeBoolUpdate(false)
-        }
-        
     }
-    
+
+
 
     
     return (
@@ -179,7 +259,7 @@ export const AdminCreateScanword = () => {
                                         <Modal/>
                                     </div>
                                     <Setting/>
-                                    <Link to="/"><button onClick={saveScanword} className="save">Сохранить сканворд</button></Link>
+                                    <button onClick={saveScanword} className="save">Сохранить сканворд</button>
                                 </div>
                                 <div className="matrix">
                                     <Matrix/>

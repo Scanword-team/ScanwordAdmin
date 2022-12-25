@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import { useHttp } from "../hooks/http.hook";
 import { DragContext } from "./DragContext";
+import {useAuth} from "../hooks/auth.hook";
 
 export const SettingContext = createContext({
     hvalue: 10,
@@ -17,7 +18,10 @@ export const SettingContext = createContext({
     listScanwords: null,
     boolUpdate: false,
     gallery: null,
+    image: null,
     audio: null,
+    id_scanword: null,
+    changeId_scanword: () => {},
     changeListDicts: () => {},
     updateAudio: () => {},
     updateGallery: () => {},
@@ -45,7 +49,7 @@ export const SettingState = ({children}) => {
 
     
     const {request} = useHttp()
-
+    const {token} = useAuth()
     const [audio, setAudio] = useState(null) // ['/src/e.mp3', '' , '']
     const [gallery, setGallery] = useState(null) // ['/src/e.png', '' , '']
     const [hvalue, setHValue] = useState(10) // количество ячеек по вертикали
@@ -63,6 +67,11 @@ export const SettingState = ({children}) => {
     }) // фильтрация списка слов: по наличию картинки, по наличию мелодии
     const [listScanwords, setListScanwords] = useState(null)
     const [boolUpdate, setBoolUpdate] = useState(false)
+    const [id_scanword, setId_scanword] = useState(null) // id сканворда при редактировании
+
+    const changeId_scanword = (id_scan) => {
+        setId_scanword(id_scan)
+    }
 
     const updateAudio = (newAudio) => {
         setAudio(newAudio)
@@ -70,15 +79,16 @@ export const SettingState = ({children}) => {
 
     const setAudioInDB = async() => {
         try {
-            const res = await request('/api/audio/audio', 'POST', {audio: audio})
+            const res = await request('/api/audio/saveAll', 'POST', audio, {['Authorization']:token})
         } catch(e) { }
     }
 
     const getAudioFromDB = async() => {
         try {
-            const res = await request('/api/audio/audio')
-            if (res.audio && res.audio.length !== 0) {
-                setAudio(res.audio)
+            const res = await request('/api/audio/','GET',null,  {['Authorization']:token})
+            console.log(res)
+            if (res && res.length !== 0) {
+                setAudio(res)
             }
         } catch(e) { }
     }
@@ -93,8 +103,20 @@ export const SettingState = ({children}) => {
 
     const updateListScanwords = async () =>{
         try {
-            const res = await request('/api/scanword/getscanwords')
-            setListScanwords([...res.scanwords])
+
+            const res = await request('/api/scanword', 'GET', null, {['Authorization']:token})
+            
+            for (const s of res) {
+                const links = await request('/api/scanwordQuestion/getAllByScanwordId/'+s.id, 'GET', null, {['Authorization']:token})
+                delete links.scanword
+                s.questions = links
+            }
+
+            console.log(res)
+
+
+            // const res = await request('/api/scanword/getscanwords')
+            setListScanwords([...res])
         } catch(e) { }
     }
 
@@ -113,8 +135,11 @@ export const SettingState = ({children}) => {
 
     const updateListDicts = async () =>{
         try {
-            const res = await request('/api/scanword/namedicts')
-            setListDicts([...res.dictionaries])
+            // const headers = new Headers();
+            // headers.append('Authorization',token);
+            const res = await request('/api/dict','GET',null,  {['Authorization']:token})
+            // const res = await request('/api/dict','GET',null,headers)
+            setListDicts([...res])
         } catch(e) { }
     }
 
@@ -122,7 +147,7 @@ export const SettingState = ({children}) => {
         setListDicts(null)
     }
  
-    const updateListwords = (newListwords=null) => {
+    const updateListwords = (newListwords) => {
         setListwords(()=>newListwords)
     }
 
@@ -137,15 +162,15 @@ export const SettingState = ({children}) => {
 
     const setGalleryInDB = async() => {
         try {
-            const res = await request('/api/gallery/gallery', 'POST', {gallery: gallery})
+            const res = await request('/api/image/saveAll', 'POST', gallery, {['Authorization']:token})
         } catch(e) { }
     }
 
     const getGalleryFromDB = async() => {
         try {
-            const res = await request('/api/gallery/gallery')
-            if (res.gallery && res.gallery.length !== 0) {
-                setGallery(res.gallery)
+            const res = await request('/api/image','GET',null,  {['Authorization']:token})
+            if (res && res.length !== 0) {
+                setGallery(res)
             }
         } catch(e) { }
     }
@@ -153,21 +178,26 @@ export const SettingState = ({children}) => {
     const getWordDBFromDB = async (localId = null) =>{
         if (!localId) {
             try {
-                if (boolUpdate) {
-                    const res = await request('/api/scanword/wordsdb', "POST", {idDict: dict, idsWords: scanword.map(element => element.questionId)})
-                    setListwords([...res.words])
-                    setWordDB([...res.words])
-                }
-                else {
-                    const res = await request('/api/scanword/wordsdb', "POST", {idDict: dict, idsWords: null})
-                    setListwords([...res.words])
-                    setWordDB([...res.words])
-                }
+                // if (boolUpdate) {
+                //     // const res = await request('/api/scanword/wordsdb', "POST", {idDict: dict, idsWords: scanword.map(element => element.questionId)})
+                //     // setListwords([...res.words])
+                //     // setWordDB([...res.words])
+                // }
+                // else {
+                //     console.log("ggg", boolUpdate)
+                //     const res = await request('/api/question/getByDictId/'+ dict, "GET", null,{"Authorization": token})
+                //     setListwords([...res])
+                //     setWordDB([...res])
+                // }
+                console.log("ggg", boolUpdate)
+                const res = await request('/api/question/getByDictId/'+ dict, "GET", null,{"Authorization": token})
+                setListwords([...res])
+                setWordDB([...res])
             } catch(e) { }
-        } else {
-            const res = await request('/api/scanword/wordsdb', "POST", {idDict: localId, idsWords: null})
-            setListwords([...res.words])
-            setWordDB([...res.words])
+        } else {            
+            const res = await request('/api/question/getByDictId/'+ localId, "GET", null,{"Authorization": token})
+            setListwords([...res])
+            setWordDB([...res])
         }
     }
 
@@ -270,7 +300,7 @@ export const SettingState = ({children}) => {
                 dict, hint,wordDB, 
                 listwords,listdicts, 
                 scanword, filter, listScanwords, 
-                boolUpdate, gallery, audio, 
+                boolUpdate, gallery, audio, id_scanword,
                 setAudioInDB, getAudioFromDB, 
                 updateAudio, getGalleryFromDB, 
                 setGalleryInDB, updateGallery,
@@ -281,7 +311,7 @@ export const SettingState = ({children}) => {
                 changeOnHorizon, changeInputVertical, 
                 changeInputHorizon, getWordDBFromDB, 
                 updateListwords, updateWordDB,
-                changeListDicts
+                changeListDicts, changeId_scanword
             }}>
             { children }
         </SettingContext.Provider>
