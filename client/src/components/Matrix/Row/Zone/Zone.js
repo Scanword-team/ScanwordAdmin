@@ -38,11 +38,11 @@ export const Zone = (props) => {
     const handlerMouseEnterZone = (event) => {
         if(event.target.getAttribute('data-question')) {
             let elem = wordDB.find((elem) => (elem.id === Number(event.target.getAttribute('data-question'))))
-            if (elem.src) {
-                updateSrc(elem.src)
+            if (elem.audio) {
+                updateSrcAudio(elem.audio.audio)
             }
-            if (elem.srcAudio) {
-                updateSrcAudio(elem.srcAudio)
+            if (elem.image) {
+                updateSrc(elem.image.image)
             }
             updateAnswer(elem.answer)
             updateQuestion(elem.question)

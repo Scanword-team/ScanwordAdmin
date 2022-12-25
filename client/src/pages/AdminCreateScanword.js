@@ -216,11 +216,30 @@ export const AdminCreateScanword = () => {
                     updateWordDB([])
                 }
                 else {
+                    console.log("idscan",id_scanword)
                     let size = [hvalue, vvalue]
-                    const res = await request('/api/scanword/saving', 'PUT', {scanword:scanword.map((el, index) => {
-                        el.number = index +1
-                        return el
-                    }), size, hint, id: id_scanword, name: id_scanword})
+                    const sc = await request('/api/scanword/create', 'POST', {
+                        id: id_scanword,
+                        name: id_scanword,
+                        width: hvalue,
+                        height: vvalue,
+                        prompt: hint, 
+                    }, {['Authorization']:token})
+                    let nn = 1
+                    scanword.forEach(s => {
+                        if (s.dict) {
+                            delete s.dict
+                        }
+                        if (s.direction === 1) {
+                            s.direction = false
+                        } else if (s.direction === 0) {
+                            s.direction = true
+                        }
+                        s.scanword = sc
+                        s.number = nn++
+                    })
+
+                    const res = await request('/api/scanwordQuestion/createWithAllDTO', 'POST', scanword, {['Authorization']:token} )
                     changeHint('',1) 
                     changeDict('',"")
                     changeInputVertical('',10)

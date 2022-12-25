@@ -316,10 +316,12 @@ export const DictionaryPage = () => {
                                 newElem.imageId = modalSrc.id
                                 newElem.audioId = null
                                 newElem.type = 'image'
+                                newElem.image = modalSrc
                             } else if (modalSrcAudio) {
                                 newElem.audioId = modalSrcAudio.id
                                 newElem.imageId = null
                                 newElem.type = 'audio'
+                                newElem.audio = modalSrcAudio
                             } else {
                                 newElem.imageId = null
                                 newElem.audioId = null
@@ -743,9 +745,9 @@ export const DictionaryPage = () => {
                                 { radioBtnImage &&
                                     <div className="bg-darker-content">
                                         <div className="list-bg-darker">
-                                            {gallery && gallery.map((src) => {
+                                            {gallery && gallery.map((src, index) => {
                                                 return (
-                                                    <div onClick={e => clickItemInList(src)} className="item-in-list" key={src}>
+                                                    <div onClick={e => clickItemInList(src)} className="item-in-list" key={index}>
                                                         <div className="itemListik">
                                                             <div className="itemScanword">
                                                                 <img src={src.image} alt="картинка"/>
@@ -760,9 +762,9 @@ export const DictionaryPage = () => {
                                     || radioBtnAudio && 
                                     <div className="bg-darker-content">
                                         <div className="list-bg-darker">
-                                            {audio && audio.map((src) => {
+                                            {audio && audio.map((src, index) => {
                                                 return (
-                                                    <div onClick={e => clickItemInList(src)} className="item-in-list" key={src}>
+                                                    <div onClick={e => clickItemInList(src)} className="item-in-list" key={index}>
                                                         <div className="itemListik">
                                                             <div className="itemScanword">
                                                                 <audio src={src.audio} controls={true}></audio>
