@@ -282,15 +282,15 @@ export const DictionaryPage = () => {
     }
 
     const clickItem = (elem_v=null) => {
-        const stopElement = stopList.find((el) => {
-            if (el.id === elem_v.id) {
-                return el
-            }
-        })
-        if (!stopElement) {
-            alert('Это слово содержится в сканвордах, его нельзя удалить или изменить')
-        } else {
-            if (elem_v) {
+        if (elem_v) {
+            const stopElement = stopList.find((el) => {
+                if (el.id === elem_v.id) {
+                    return el
+                }
+            })
+            if (!stopElement) {
+                alert('Это слово содержится в сканвордах, его нельзя удалить или изменить')
+            } else {
                 const elem = {...elem_v}
                 setModalAnswer(elem.answer)
                 setModalQuestion(elem.question)
@@ -303,9 +303,10 @@ export const DictionaryPage = () => {
                 if (elem.id) {
                     setModalId(elem.id)
                 }
-            } else {
-                setModalAnswer("")
+                setClickedItem(true)
             }
+        } else {
+            setModalAnswer("")
             setClickedItem(true)
         }
     }
@@ -423,6 +424,7 @@ export const DictionaryPage = () => {
                         updateListwords([elem])
                         setLocalListWords([elem]) // NUUUUUUUUUUUUUUUUUUUUUUULLLLLLLLLLLLLLLLLLLL
                     }
+                    
                 }
                 
                 
